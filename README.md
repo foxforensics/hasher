@@ -21,7 +21,7 @@ Perceptual hashes:
 > Average, Difference, Median, PHash, WHash, MarrHildreth, BlockMean, PDQ, RASH
 
 Similarity hashes:
-> ImpFuzzy, ImpHash, ImpHash0, SSDeep, TLSH
+> ImpFuzzy, ImpHashO, ImpHashS, SSDeep, TLSH
 
 Windows hashes:
 > LM, NT, PE

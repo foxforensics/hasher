@@ -74,8 +74,8 @@ const (
 	GOST2012512  = "gost-512"
 	HAS160       = "has-160"
 	IMPFUZZY     = "impfuzzy"
-	IMPHASH      = "imphash"
-	IMPHASH0     = "imphash0"
+	IMPHASHO     = "imphasho"
+	IMPHASHS     = "imphashs"
 	LM           = "lm"
 	LSH256       = "lsh-256"
 	LSH512       = "lsh-512"
@@ -146,8 +146,8 @@ var Algorithms = []string{
 	GOST2012512,
 	HAS160,
 	IMPFUZZY,
-	IMPHASH,
-	IMPHASH0,
+	IMPHASHO,
+	IMPHASHS,
 	LM,
 	LSH256,
 	LSH512,
@@ -260,9 +260,9 @@ func Sum(algo string, data []byte) (string, error) {
 		h = has160.New()
 	case IMPFUZZY:
 		h = impfuzzy.New()
-	case IMPHASH:
+	case IMPHASHO:
 		h = imphash.NewUnsorted()
-	case IMPHASH0:
+	case IMPHASHS:
 		h = imphash.NewSorted()
 	case LM:
 		h = lm.New()
