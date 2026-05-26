@@ -27,9 +27,12 @@ func Lookup(dll string, ord uint32) string {
 }
 
 func GetImports(b []byte, sort bool) ([]string, error) {
+	var file = make([]byte, len(b))
 	var imps []string
 
-	f, err := pe.NewBytes(b, &pe.Options{
+	copy(file, b)
+
+	f, err := pe.NewBytes(file, &pe.Options{
 		DisableCertValidation:      true,
 		DisableSignatureValidation: true,
 		OmitExportDirectory:        true,
