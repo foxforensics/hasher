@@ -7,7 +7,7 @@ go install go.foxforensics.dev/hasher@latest
 
 ## Usage
 ```console
-$ hasher ALGO PATH
+$ hasher ALGORITHM PATH
 ```
 
 ## Algorithms
