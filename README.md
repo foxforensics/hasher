@@ -23,10 +23,10 @@ Perceptual hashes:
 Similarity hashes:
 > ImpFuzzy, ImpHashO, ImpHashS, sdhash, SSDeep, TLSH
 
-Windows hashes:
+Windows specific:
 > LM, NT, PE
 
-Unix hashes:
+Unix specific:
 > BSD, ELF, SYSV
 
 Checksums:
