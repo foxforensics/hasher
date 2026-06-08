@@ -6,7 +6,7 @@ import (
 	"hash"
 	"strings"
 
-	"go.foxforensics.dev/hasher/internal/imports"
+	"go.foxforensics.dev/hasher/internal/similarity/imports"
 )
 
 type ImpHash struct {

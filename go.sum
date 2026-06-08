@@ -49,6 +49,8 @@ github.com/jzelinskie/whirlpool v0.0.0-20201016144138-0675e54bb004 h1:G+9t9cEtnC
 github.com/jzelinskie/whirlpool v0.0.0-20201016144138-0675e54bb004/go.mod h1:KmHnJWQrgEvbuy0vcvj00gtMqbvNn1L+3YUZLK/B92c=
 github.com/klauspost/cpuid/v2 v2.3.0 h1:S4CRMLnYUhGeDFDqkGriYKdfoFlDnMtqTiI/sFzhA9Y=
 github.com/klauspost/cpuid/v2 v2.3.0/go.mod h1:hqwkgyIinND0mEev00jJYCxPNVRVXFQeu1XKlok6oO0=
+github.com/malwarology/sdhash v0.5.0 h1:3nam1U7i8JCl6LETYUK/FxISnFGDUSkWRRHUy7D8icw=
+github.com/malwarology/sdhash v0.5.0/go.mod h1:PlicHvCJZEVPIILU/eQQsc/Nb4aDp4iFObJR0PF3FTg=
 github.com/pedroalbanese/md6 v0.0.0-20240815222317-052c055905a4 h1:T10NNFGRLmLuOKm+d0Xrb4mZWxjHRCLLXqUrB8bdT5A=
 github.com/pedroalbanese/md6 v0.0.0-20240815222317-052c055905a4/go.mod h1:SnCwEQNkRaJCqW/jmXTc+lS/yeUtoT+fJh/uczEj4MU=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

@@ -10,6 +10,7 @@ require (
 	github.com/glaslos/tlsh v0.4.0
 	github.com/htruong/go-md2 v0.0.0-20170914203617-c69905b63f6f
 	github.com/jzelinskie/whirlpool v0.0.0-20201016144138-0675e54bb004
+	github.com/malwarology/sdhash v0.5.0
 	github.com/pedroalbanese/md6 v0.0.0-20240815222317-052c055905a4
 	github.com/saferwall/pe v1.6.5
 	github.com/spaolacci/murmur3 v1.1.0

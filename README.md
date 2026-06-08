@@ -21,13 +21,16 @@ Perceptual hashes:
 > Average, Difference, Median, PHash, WHash, MarrHildreth, BlockMean, PDQ, RASH
 
 Similarity hashes:
-> ImpFuzzy, ImpHashO, ImpHashS, SSDeep, TLSH
+> ImpFuzzy, ImpHashO, ImpHashS, sdhash, SSDeep, TLSH
 
 Windows hashes:
 > LM, NT, PE
 
+Unix hashes:
+> BSD, ELF, SYSV
+
 Checksums:
-> Adler32, Fletcher4, CRC16-CCITT, CRC32-C, CRC32-IEEE, CRC64-ECMA, CRC64-ISO
+> Adler32, Fletcher4, Luhn, CRC16-CCITT, CRC32-C, CRC32-K, CRC32-IEEE, CRC64-ECMA, CRC64-ISO
 
 ## License
 Released under the [MIT License](LICENSE.md).
