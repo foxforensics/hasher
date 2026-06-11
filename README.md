@@ -2,7 +2,7 @@
 Multi-algorithm hasher supporting cryptographic, performance, perceptual and similarity hashes, as well as different checksums.
 
 ```console
-go install go.foxforensics.dev/hasher@latest
+go install go.foxforensics.eu/hasher@latest
 ```
 
 ## Usage

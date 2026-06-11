@@ -18,8 +18,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"go.foxforensics.dev/go-mmap"
-	"go.foxforensics.dev/hasher/hash"
+	"go.foxforensics.eu/go-mmap"
+	"go.foxforensics.eu/hasher/hash"
 )
 
 var Usage = `© 2026 Fox Forensics. Licensed under MIT License.
@@ -51,7 +51,7 @@ Checksums:
   Adler32, Fletcher4, Luhn, CRC16-CCITT, CRC32-C, CRC32-K, CRC32-IEEE
   CRC64-ECMA, CRC64-ISO
 
-Report bugs at: foxforensics.dev/issues`
+Report bugs at: foxforensics.eu/issues`
 
 func main() {
 	if len(os.Args) < 3 || os.Args[1] == "--help" {

@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/glaslos/ssdeep"
-	"go.foxforensics.dev/hasher/internal/similarity/imports"
+	"go.foxforensics.eu/hasher/internal/similarity/imports"
 )
 
 type ImpFuzzy struct {
