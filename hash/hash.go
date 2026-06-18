@@ -37,8 +37,8 @@ import (
 	"go.foxforensics.eu/hasher/internal/crypto/blake3"
 	"go.foxforensics.eu/hasher/internal/crypto/shake"
 	"go.foxforensics.eu/hasher/internal/perceptual/imghash"
-	"go.foxforensics.eu/hasher/internal/perfomance/djb2"
-	"go.foxforensics.eu/hasher/internal/perfomance/xxh"
+	"go.foxforensics.eu/hasher/internal/performance/djb2"
+	"go.foxforensics.eu/hasher/internal/performance/xxh"
 	"go.foxforensics.eu/hasher/internal/similarity/impfuzzy"
 	"go.foxforensics.eu/hasher/internal/similarity/imphash"
 	"go.foxforensics.eu/hasher/internal/similarity/sdhash"
@@ -110,7 +110,6 @@ var Algorithms = []struct {
 	{SHA1, Cryptographic},
 	{SHA256, Cryptographic},
 	{SHA512, Cryptographic},
-	{SHA3, Cryptographic},
 	{SHA3224, Cryptographic},
 	{SHA3256, Cryptographic},
 	{SHA3384, Cryptographic},
@@ -135,8 +134,21 @@ var Algorithms = []struct {
 	{XXH64, Performance},
 }
 
-// NotSupported if algorithm is unknown
+// NotSupported if algorithm is implemented
 var NotSupported = errors.New("algorithm not supported")
+
+// IsSupported returns if the algorithm is implemented
+func IsSupported(algo string) bool {
+	algo = strings.ToLower(algo)
+
+	for _, a := range Algorithms {
+		if a.Name == algo {
+			return true
+		}
+	}
+
+	return false
+}
 
 // MustSum returns only the hash sum.
 func MustSum(algo string, data []byte) string {
@@ -154,14 +166,12 @@ func Sum(algo string, data []byte) (string, error) {
 	var h hash.Hash
 	var err error
 
-	ssdeep.Force = true
-
 	// this list kills our cyclomatic complexity!
 	switch strings.ToLower(algo) {
 	case ADLER32:
 		h = adler32.New()
 	case AVERAGE:
-		h = imghash.New(imghash.Average)
+		h, err = imghash.New(imghash.Average)
 	case BLAKE2B256:
 		h, err = blake2b.New256(nil)
 	case BLAKE2B384:
@@ -175,7 +185,7 @@ func Sum(algo string, data []byte) (string, error) {
 	case BLAKE3512:
 		h = blake3.New512()
 	case BLOCKMEAN:
-		h = imghash.New(imghash.BlockMean)
+		h, err = imghash.New(imghash.BlockMean)
 	case BSD:
 		h = bsd.New()
 	case CRC16CCITT:
@@ -191,7 +201,7 @@ func Sum(algo string, data []byte) (string, error) {
 	case CRC64ISO:
 		h = crc64.New(crc64.MakeTable(crc64.ISO))
 	case DIFFERENCE:
-		h = imghash.New(imghash.Difference)
+		h, err = imghash.New(imghash.Difference)
 	case DJB2:
 		h = djb2.New()
 	case ELF:
@@ -223,7 +233,7 @@ func Sum(algo string, data []byte) (string, error) {
 	case LUHN:
 		h = luhn.New()
 	case MARRHILDRETH:
-		h = imghash.New(imghash.MarrHildreth)
+		h, err = imghash.New(imghash.MarrHildreth)
 	case MD2:
 		h = md2.New()
 	case MD4:
@@ -233,21 +243,21 @@ func Sum(algo string, data []byte) (string, error) {
 	case MD6:
 		h = md6.New256()
 	case MEDIAN:
-		h = imghash.New(imghash.Median)
+		h, err = imghash.New(imghash.Median)
 	case MURMUR3:
 		h = murmur3.New64() // Murmur3f
 	case NT:
 		h = nt.New()
 	case PDQ:
-		h = imghash.New(imghash.PDQ)
+		h, err = imghash.New(imghash.PDQ)
 	case PE:
 		h = pe.New()
 	case PHASH:
-		h = imghash.New(imghash.PHash)
+		h, err = imghash.New(imghash.PHash)
 	case RAPIDHASH:
 		h = rapidhash.New()
 	case RASH:
-		h = imghash.New(imghash.RASH)
+		h, err = imghash.New(imghash.RASH)
 	case RIPEMD160:
 		h = ripemd160.New()
 	case SDHASH:
@@ -260,8 +270,6 @@ func Sum(algo string, data []byte) (string, error) {
 		h = sha256.New()
 	case SHA512:
 		h = sha512.New()
-	case SHA3:
-		fallthrough
 	case SHA3224:
 		h = sha3.New224()
 	case SHA3256:
@@ -275,7 +283,7 @@ func Sum(algo string, data []byte) (string, error) {
 	case SHAKE256:
 		h = shake.New256()
 	case SIPHASH:
-		h = siphash.New(make([]byte, 16)) // SipHash-2-4 with zero key
+		h = siphash.New(make([]byte, 16)) // SipHash-2-4 uses an all-zero key
 	case SKEIN224:
 		h = skein.NewHash224()
 	case SKEIN256:
@@ -293,7 +301,7 @@ func Sum(algo string, data []byte) (string, error) {
 	case TLSH:
 		h = tlsh.New()
 	case WHASH:
-		h = imghash.New(imghash.WHash)
+		h, err = imghash.New(imghash.WHash)
 	case WHIRLPOOL:
 		h = whirlpool.New()
 	case XXH3:

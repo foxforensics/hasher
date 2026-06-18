@@ -28,9 +28,9 @@ Usage: hasher ALGORITHM PATH
 Cryptographic hashes:
   BLAKE2S-256, BLAKE2B-256, BLAKE2B-384, BLAKE2B-512, BLAKE3-256, BLAKE3-512
   GOST2012-256, GOST2012-512, HAS-160, LSH-256, LSH-512, MD2, MD4, MD5, MD6
-  RIPEMD-160, SHAKE128, SHAKE256, SHA1, SHA224, SHA256, SHA512, SHA3, SHA3-224
-  SHA3-256, SHA3-384, SHA3-512, Skein-224, Skein-256, Skein-384, Skein-512, SM3
-  Whirlpool
+  RIPEMD-160, SHAKE128, SHAKE256, SHA1, SHA224, SHA256, SHA512, SHA3-224
+  SHA3-256, SHA3-384, SHA3-512, Skein-224, Skein-256, Skein-384, Skein-512
+  SM3, Whirlpool
 
 Performance hashes:
   DJB2, FNV-1, FNV-1a, Murmur3, RapidHash, SipHash, XXH32, XXH64, XXH3
@@ -59,10 +59,14 @@ func main() {
 		os.Exit(2)
 	}
 
-	err := filepath.WalkDir(os.Args[2], func(path string, d fs.DirEntry, err error) error {
+	if !hash.IsSupported(os.Args[1]) {
+		_, _ = fmt.Fprintln(os.Stderr, hash.NotSupported.Error())
+		os.Exit(1)
+	}
+
+	if err := filepath.WalkDir(os.Args[2], func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			_, _ = fmt.Fprintln(os.Stderr, err)
-			return nil
+			return err
 		}
 
 		if d.IsDir() {
@@ -72,41 +76,40 @@ func main() {
 		path, err = filepath.Abs(path)
 
 		if err != nil {
-			_, _ = fmt.Fprintln(os.Stderr, err)
-			return nil
+			return err
 		}
 
 		f, err := os.Open(path)
 
 		if err != nil {
-			_, _ = fmt.Fprintln(os.Stderr, err)
-			return nil
+			return err
 		}
 
-		defer func() { _ = f.Close() }()
+		defer func() {
+			_ = f.Close()
+		}()
 
 		m, err := mmap.Map(f, mmap.RDONLY, 0)
 
 		if err != nil {
-			_, _ = fmt.Fprintln(os.Stderr, err)
-			return nil
+			return err
 		}
 
-		defer func() { _ = m.Unmap() }()
+		defer func() {
+			_ = m.Unmap()
+		}()
 
 		s, err := hash.Sum(os.Args[1], m)
 
 		if err != nil {
-			_, _ = fmt.Fprintln(os.Stderr, err)
-			return nil
+			return err
 		}
 
 		_, _ = fmt.Printf("%s  %s\n", s, path)
-		return nil
-	})
 
-	if err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, err)
+		return nil
+	}); err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, err.Error())
 		os.Exit(1)
 	}
 }
