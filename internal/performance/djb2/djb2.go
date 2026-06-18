@@ -7,7 +7,7 @@ import (
 
 const (
 	size  = 8
-	block = 8
+	block = 1
 	start = 5381
 )
 
@@ -40,12 +40,8 @@ func (h *Djb2) Write(b []byte) (n int, err error) {
 }
 
 func (h *Djb2) Sum(b []byte) []byte {
-	if len(b) > 0 {
-		_, _ = h.Write(b)
-	}
+	sum := make([]byte, size)
+	binary.LittleEndian.PutUint64(sum, h.sum)
 
-	v := make([]byte, size)
-	binary.LittleEndian.PutUint64(v, h.sum)
-
-	return v
+	return append(b, sum...)
 }

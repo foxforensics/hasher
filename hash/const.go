@@ -64,7 +64,6 @@ const (
 	SHA224       = "sha224"
 	SHA256       = "sha256"
 	SHA512       = "sha512"
-	SHA3         = "sha3"
 	SHA3224      = "sha3-224"
 	SHA3256      = "sha3-256"
 	SHA3384      = "sha3-384"
