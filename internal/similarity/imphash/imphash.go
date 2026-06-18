@@ -47,8 +47,8 @@ func (h *ImpHash) Write(b []byte) (n int, err error) {
 
 }
 
-func (h *ImpHash) Sum(_ []byte) []byte {
+func (h *ImpHash) Sum(b []byte) []byte {
 	sum := md5.Sum([]byte(strings.Join(h.buf, ",")))
 
-	return sum[:]
+	return append(b, sum[:]...)
 }

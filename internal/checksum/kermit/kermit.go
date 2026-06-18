@@ -32,7 +32,7 @@ func (h *Kermit) Reset() {
 }
 
 func (h *Kermit) Write(b []byte) (n int, err error) {
-	var v uint16
+	v := h.sum
 
 	for i := 0; i < len(b); i++ {
 		c := uint16(b[i])
@@ -48,12 +48,8 @@ func (h *Kermit) Write(b []byte) (n int, err error) {
 }
 
 func (h *Kermit) Sum(b []byte) []byte {
-	if len(b) > 0 {
-		_, _ = h.Write(b)
-	}
+	sum := make([]byte, size)
+	binary.LittleEndian.PutUint16(sum, h.sum)
 
-	v := make([]byte, size)
-	binary.LittleEndian.PutUint16(v, h.sum)
-
-	return v
+	return append(b, sum...)
 }

@@ -38,8 +38,9 @@ func (h *PE) Write(b []byte) (n int, err error) {
 	l := uint32(len(b))
 
 	if r > 0 {
+		pad := make([]byte, 4-r)
+		b = append(append([]byte(nil), b...), pad...)
 		l += 4 - r
-		b = append(b, make([]byte, 4-r)...)
 	}
 
 	for i := uint64(0); i < uint64(l); i += 4 {
@@ -60,12 +61,8 @@ func (h *PE) Write(b []byte) (n int, err error) {
 }
 
 func (h *PE) Sum(b []byte) []byte {
-	if len(b) > 0 {
-		_, _ = h.Write(b)
-	}
+	sum := make([]byte, size)
+	binary.LittleEndian.PutUint32(sum, uint32(h.sum))
 
-	v := make([]byte, size)
-	binary.LittleEndian.PutUint32(v, uint32(h.sum))
-
-	return v
+	return append(b, sum...)
 }

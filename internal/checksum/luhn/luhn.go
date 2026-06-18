@@ -4,7 +4,6 @@ package luhn
 import (
 	"errors"
 	"hash"
-	"log"
 	"strconv"
 	"strings"
 )
@@ -56,17 +55,9 @@ func (h *Luhn) Write(b []byte) (n int, err error) {
 }
 
 func (h *Luhn) Sum(b []byte) []byte {
-	if len(b) > 0 {
-		_, err := h.Write(b)
-
-		if err != nil {
-			log.Println(err)
-		}
-	}
-
 	if h.num == 0 {
-		return []byte{'0'}
+		return append(b, '0')
 	}
 
-	return []byte(strconv.Itoa(10 - h.num))
+	return append(b, strconv.Itoa(10-h.num)...)
 }

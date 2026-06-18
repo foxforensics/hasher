@@ -2,15 +2,15 @@ package imghash
 
 import (
 	"bytes"
+	"errors"
 	"hash"
 	"image"
-	"log"
 
 	"github.com/ajdnik/imghash/v2"
 )
 
 const (
-	Average Type = iota
+	Average HashType = iota
 	Difference
 	Median
 	PHash
@@ -21,65 +21,48 @@ const (
 	RASH
 )
 
-type Type int
+type HashType int
 
 type Hash struct {
-	base imghash.Hasher
-	sum  imghash.Hash
+	hsr imghash.Hasher
+	sum imghash.Hash
+	ht  HashType
 }
 
-func New(typ Type) hash.Hash {
-	var h imghash.Hasher
+func New(ht HashType) (hash.Hash, error) {
+	var hsr imghash.Hasher
 	var err error
 
-	switch typ {
-	case Average:
-		h, err = imghash.NewAverage()
-	case Difference:
-		h, err = imghash.NewDifference()
-	case Median:
-		h, err = imghash.NewMedian()
-	case PHash:
-		h, err = imghash.NewPHash()
-	case WHash:
-		h, err = imghash.NewWHash()
-	case MarrHildreth:
-		h, err = imghash.NewMarrHildreth()
-	case BlockMean:
-		h, err = imghash.NewBlockMean()
-	case PDQ:
-		h, err = imghash.NewPDQ()
-	case RASH:
-		h, err = imghash.NewRASH()
-	}
+	hsr, err = getHasher(ht)
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return &Hash{base: h}
+	return &Hash{hsr: hsr, ht: ht}, nil
 }
 
 func (h *Hash) BlockSize() int {
-	return h.sum.Len()
+	return 0 // individual
 }
 
 func (h *Hash) Size() int {
-	return h.sum.Len()
+	return 0 // individual
 }
 
 func (h *Hash) Reset() {
-	// not supported
+	h.hsr, _ = getHasher(h.ht)
+	h.sum = nil
 }
 
 func (h *Hash) Write(b []byte) (n int, err error) {
 	img, _, err := image.Decode(bytes.NewReader(b))
 
 	if err != nil {
-		return 0, err
+		return 0, errors.New("invalid image format")
 	}
 
-	h.sum, err = h.base.Calculate(img)
+	h.sum, err = h.hsr.Calculate(img)
 
 	if err != nil {
 		return 0, err
@@ -89,13 +72,36 @@ func (h *Hash) Write(b []byte) (n int, err error) {
 }
 
 func (h *Hash) Sum(b []byte) []byte {
-	if len(b) > 0 {
-		_, _ = h.Write(b)
-	}
-
-	if v, ok := h.sum.(imghash.Binary); ok {
-		return v
+	if h.sum != nil {
+		if sum, ok := h.sum.(imghash.Binary); ok {
+			return append(b, sum...)
+		}
 	}
 
 	return nil
+}
+
+func getHasher(ht HashType) (imghash.Hasher, error) {
+	switch ht {
+	case Average:
+		return imghash.NewAverage()
+	case Difference:
+		return imghash.NewDifference()
+	case Median:
+		return imghash.NewMedian()
+	case PHash:
+		return imghash.NewPHash()
+	case WHash:
+		return imghash.NewWHash()
+	case MarrHildreth:
+		return imghash.NewMarrHildreth()
+	case BlockMean:
+		return imghash.NewBlockMean()
+	case PDQ:
+		return imghash.NewPDQ()
+	case RASH:
+		return imghash.NewRASH()
+	default:
+		return nil, errors.New("invalid hash type")
+	}
 }

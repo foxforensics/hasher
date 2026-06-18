@@ -43,12 +43,8 @@ func (h *ELF) Write(b []byte) (n int, err error) {
 }
 
 func (h *ELF) Sum(b []byte) []byte {
-	if len(b) > 0 {
-		_, _ = h.Write(b)
-	}
+	sum := make([]byte, h.Size())
+	binary.LittleEndian.PutUint32(sum, h.sum)
 
-	v := make([]byte, h.Size())
-	binary.LittleEndian.PutUint32(v, h.sum)
-
-	return v
+	return append(b, sum...)
 }

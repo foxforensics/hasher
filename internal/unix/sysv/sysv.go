@@ -35,14 +35,11 @@ func (h *SYSV) Write(b []byte) (n int, err error) {
 }
 
 func (h *SYSV) Sum(b []byte) []byte {
-	if len(b) > 0 {
-		_, _ = h.Write(b)
+	sum := h.sum
+
+	for sum > 0xFFFF {
+		sum = (sum & 0xFFFF) + (sum >> 16)
 	}
 
-	var v uint32
-
-	v = (h.sum & 0xFFFF) + (h.sum >> 16)
-	v = (h.sum & 0xFFFF) + (h.sum >> 16)
-
-	return []byte(fmt.Sprintf("%05d", v))
+	return append(b, fmt.Sprintf("%05d", sum)...)
 }

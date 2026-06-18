@@ -15,13 +15,13 @@ func New256() *Shake {
 	return &Shake{*sha3.NewSHAKE256(), 32}
 }
 
-func (s *Shake) Size() int {
-	return s.size
+func (h *Shake) Size() int {
+	return h.size
 }
 
-func (s *Shake) Sum(_ []byte) []byte {
-	b := make([]byte, s.size)
-	_, _ = s.Read(b)
+func (h *Shake) Sum(b []byte) []byte {
+	sum := make([]byte, h.size)
+	_, _ = h.Read(sum)
 
-	return b
+	return append(b, sum...)
 }

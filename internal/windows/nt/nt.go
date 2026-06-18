@@ -5,15 +5,20 @@ import (
 	"hash"
 
 	"golang.org/x/crypto/md4"
+	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
 )
 
 type NT struct {
+	enc *encoding.Encoder
 	md4 hash.Hash
 }
 
 func New() hash.Hash {
-	h := &NT{md4.New()}
+	h := &NT{
+		unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewEncoder(),
+		md4.New(),
+	}
 	h.Reset()
 	return h
 }
@@ -27,13 +32,12 @@ func (h *NT) Size() int {
 }
 
 func (h *NT) Reset() {
+	h.enc.Reset()
 	h.md4.Reset()
 }
 
 func (h *NT) Write(b []byte) (n int, err error) {
-	e := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewEncoder()
-
-	b, err = e.Bytes(b)
+	b, err = h.enc.Bytes(b)
 
 	if err != nil {
 		return 0, err
@@ -43,5 +47,11 @@ func (h *NT) Write(b []byte) (n int, err error) {
 }
 
 func (h *NT) Sum(b []byte) []byte {
+	b, err := h.enc.Bytes(b)
+
+	if err != nil {
+		return nil
+	}
+
 	return h.md4.Sum(b)
 }

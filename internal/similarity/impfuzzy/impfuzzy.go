@@ -2,7 +2,6 @@ package impfuzzy
 
 import (
 	"hash"
-	"log"
 	"strings"
 
 	"github.com/glaslos/ssdeep"
@@ -18,11 +17,11 @@ func New() hash.Hash {
 }
 
 func (h *ImpFuzzy) BlockSize() int {
-	return h.BlockSize()
+	return 3 // minimum block size
 }
 
 func (h *ImpFuzzy) Size() int {
-	return h.Size()
+	return 64 // spam sum length
 }
 
 func (h *ImpFuzzy) Reset() {
@@ -41,12 +40,15 @@ func (h *ImpFuzzy) Write(b []byte) (n int, err error) {
 	return len(b), nil
 }
 
-func (h *ImpFuzzy) Sum(_ []byte) []byte {
+func (h *ImpFuzzy) Sum(b []byte) []byte {
+	f := ssdeep.Force
+	ssdeep.Force = true
 	sum, err := ssdeep.FuzzyBytes([]byte(strings.Join(h.buf, ",")))
+	ssdeep.Force = f
 
 	if err != nil {
-		log.Println(err)
+		return nil
 	}
 
-	return []byte(sum)
+	return append(b, sum...)
 }

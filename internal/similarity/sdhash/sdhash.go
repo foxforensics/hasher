@@ -20,7 +20,7 @@ func (h *Sdhash) BlockSize() int {
 }
 
 func (h *Sdhash) Size() int {
-	return len(h.sdbf.String())
+	return 0 // dynamic size
 }
 
 func (h *Sdhash) Reset() {
@@ -43,6 +43,6 @@ func (h *Sdhash) Write(b []byte) (n int, err error) {
 	return len(b), nil
 }
 
-func (h *Sdhash) Sum(_ []byte) []byte {
-	return []byte(strings.TrimSpace(h.sdbf.String()))
+func (h *Sdhash) Sum(b []byte) []byte {
+	return append(b, strings.TrimSpace(h.sdbf.String())...)
 }

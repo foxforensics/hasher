@@ -4,7 +4,6 @@ package bsd
 import (
 	"fmt"
 	"hash"
-	"log"
 )
 
 type BSD struct {
@@ -37,13 +36,5 @@ func (h *BSD) Write(b []byte) (n int, err error) {
 }
 
 func (h *BSD) Sum(b []byte) []byte {
-	if len(b) > 0 {
-		_, err := h.Write(b)
-
-		if err != nil {
-			log.Println(err)
-		}
-	}
-
-	return []byte(fmt.Sprintf("%05d", h.sum))
+	return append(b, fmt.Sprintf("%05d", h.sum)...)
 }

@@ -15,11 +15,9 @@ func New512() *Blake3 {
 	return &Blake3{*blake3.New(), 64}
 }
 
-func (b *Blake3) Sum(_ []byte) []byte {
-	s := make([]byte, b.size)
-	d := b.Hasher.Digest()
+func (h *Blake3) Sum(b []byte) []byte {
+	sum := make([]byte, h.size)
+	_, _ = h.Hasher.Digest().Read(sum)
 
-	_, _ = d.Read(s)
-
-	return s
+	return append(b, sum...)
 }

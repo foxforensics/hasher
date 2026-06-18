@@ -5,7 +5,6 @@ import (
 	"crypto/des"
 	"errors"
 	"hash"
-	"log"
 	"strings"
 )
 
@@ -49,8 +48,17 @@ func (h *LM) Write(b []byte) (n int, err error) {
 		s += strings.Repeat("\x00", block-len(s))
 	}
 
-	s1 := desBlock(desKey([]byte(s[:7])))
-	s2 := desBlock(desKey([]byte(s[7:])))
+	s1, err := desBlock(desKey([]byte(s[:7])))
+
+	if err != nil {
+		return 0, err
+	}
+
+	s2, err := desBlock(desKey([]byte(s[7:])))
+
+	if err != nil {
+		return 0, err
+	}
 
 	h.sum = append(h.sum, s1...)
 	h.sum = append(h.sum, s2...)
@@ -59,25 +67,20 @@ func (h *LM) Write(b []byte) (n int, err error) {
 }
 
 func (h *LM) Sum(b []byte) []byte {
-	if len(b) > 0 {
-		_, _ = h.Write(b)
-	}
-
-	return h.sum
+	return append(b, h.sum...)
 }
 
-func desBlock(k []byte) []byte {
+func desBlock(k []byte) ([]byte, error) {
 	b := make([]byte, 8)
-
 	c, err := des.NewCipher(k)
 
 	if err != nil {
-		log.Fatalln(err)
+		return nil, err
 	}
 
 	c.Encrypt(b, []byte("KGS!@#$%"))
 
-	return b
+	return b, nil
 }
 
 func desKey(b []byte) []byte {
