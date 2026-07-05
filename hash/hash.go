@@ -134,8 +134,8 @@ var Algorithms = []struct {
 	{XXH64, Performance},
 }
 
-// NotSupported if algorithm is implemented
-var NotSupported = errors.New("algorithm not supported")
+// ErrNotSupported if algorithm is implemented
+var ErrNotSupported = errors.New("algorithm not supported")
 
 // IsSupported returns if the algorithm is implemented
 func IsSupported(algo string) bool {
@@ -311,7 +311,7 @@ func Sum(algo string, data []byte) (string, error) {
 	case XXH64:
 		h = xxhash.New()
 	default:
-		return "", NotSupported
+		return "", ErrNotSupported
 	}
 
 	if err != nil {
@@ -328,7 +328,7 @@ func Sum(algo string, data []byte) (string, error) {
 	// special formating for some hashes
 	switch algo {
 	case BSD, SYSV, LUHN, SDHASH, SSDEEP, IMPFUZZY:
-		return fmt.Sprintf("%s", h.Sum(nil)), nil
+		return string(h.Sum(nil)), nil
 	case TLSH:
 		return fmt.Sprintf("T1%x", h.Sum(nil)), nil
 	default:

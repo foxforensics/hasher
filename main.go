@@ -60,7 +60,7 @@ func main() {
 	}
 
 	if !hash.IsSupported(os.Args[1]) {
-		_, _ = fmt.Fprintln(os.Stderr, hash.NotSupported.Error())
+		_, _ = fmt.Fprintln(os.Stderr, hash.ErrNotSupported.Error())
 		os.Exit(1)
 	}
 
